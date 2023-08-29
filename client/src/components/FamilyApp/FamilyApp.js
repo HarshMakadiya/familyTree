@@ -21,7 +21,7 @@ const FamilyApp = () => {
 
   useEffect(()=>{
     const len = Object.keys(personsList).length;
-    if(len===0) setRootNode(-1);
+    if(len==0) setRootNode(-1);
   },[personsList]);
 
   function genStruct(index){
@@ -35,11 +35,13 @@ const FamilyApp = () => {
     }
     return struct;
   }
+  // DFS approach to generate the tree
   function dfs(node){
     if(Object.keys(personsList).length===0) return {};
     const configData = genStruct(node);
     if(parseInt(node)==-1) return {};
     if(!personsList[node]) return {};
+  
     if(personsList[node].children.length===0){
       const todaysDate = new Date();
       const formatted = todaysDate.toLocaleDateString("en-UK").split("/").reverse().join("-");
@@ -62,6 +64,7 @@ const FamilyApp = () => {
       i++;
     }
     i = 0;
+    // toBeDeleted is an array of indexes of the children which are not present in the database
     for(let Ids in toBeDeleted){
       personsList[node].children.splice(Ids - i,1);
       i++;
@@ -69,30 +72,6 @@ const FamilyApp = () => {
     configData.minMax[1] = getMinChildBirthDate;
     return configData;
   }
-  const [data, setData] = useState(0);
-
-  const updateChild = (nodeId, updatedProperties) => {
-    const updatedData = { ...data };
-    const nodeToUpdate = updatedData.nodes.find(node => node.id === nodeId);
-    if (nodeToUpdate) {
-      Object.assign(nodeToUpdate, updatedProperties);
-      setData(updatedData);
-    }
-  };
-
-  const deleteChild = (nodeId) => {
-    const updatedData = { ...data };
-    updatedData.nodes = updatedData.nodes.filter(node => node.id !== nodeId);
-    setData(updatedData);
-  };
-
-  const addChild = (parentNode, childNode) => {
-    const updatedData = { ...data };
-    childNode.parents = [parentNode.id];
-    updatedData.nodes.push(childNode);
-    setData(updatedData);
-  };
-
   const [person,setPerson] = useState({});
   const [show,setShow] = useState(false);
 
@@ -102,11 +81,10 @@ const FamilyApp = () => {
     setShow(true);
     setPerson(e.data);
   }
-
   return (
     <>
       <div style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Tree onNodeClick={nodeClick} translate={{  x: window.innerWidth / 2, y: 100 }} draggable={false} orientation='vertical' data={dfs(rootNode)} />
+        <Tree onNodeClick={nodeClick} translate={{  x: window.innerWidth / 2, y: 100 }} draggable={true} orientation='vertical' data={dfs(rootNode)} />
       </div>
       <EditPerson person={person} personsList = {personsList} setPersonList={setPersonList} show={show} setShow={setShow} />
       <AddFamily setPersonList={setPersonList} personsList={personsList} rootNode={rootNode} setRootNode={setRootNode}/>

@@ -18,7 +18,6 @@ export default function EditPerson({person, personsList,setPersonList,show,setSh
     setShow(0);
   }
   const handleChanges = (e)=>{
-    console.log(person?.minMax);
     const dummy = {...personsList};
     dummy[person.id].full_name = editPerson.full_name;
     dummy[person.id].birthdate = editPerson.birthdate;
@@ -39,10 +38,10 @@ export default function EditPerson({person, personsList,setPersonList,show,setSh
     });
   }
   const handleDelete = (e)=>{
-    
     let queue = [];
     queue.push(person.id);
     const toDelete = [];
+    // BFS approach to delete all the children of the person
     const dummy = {...personsList};
     while(queue.length){
       let x = queue.shift();
@@ -62,9 +61,6 @@ export default function EditPerson({person, personsList,setPersonList,show,setSh
     if(!data.success) return;
     setPersonList(dummy);
   });
-
-  
-
     setShow(0);
   }
   return (

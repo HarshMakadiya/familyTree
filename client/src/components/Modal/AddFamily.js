@@ -22,9 +22,6 @@ const AddFamily = ({personsList, setPersonList,rootNode,setRootNode}) => {
     e.target.setAttribute('disabled',true);
     setLoading(true);
     person.rootNode = rootNode;
-    // setLoading(false);
-    // setShow(false);
-    // return;
     fetch('http://localhost:5001/api/person/',{
       method:'POST',
       body:JSON.stringify(person),
@@ -33,6 +30,7 @@ const AddFamily = ({personsList, setPersonList,rootNode,setRootNode}) => {
       }
     }).then(res=>res.json()).then(data=>{
       let tmpObj = {};
+      console.log(data,"data");
       tmpObj[data.person.person_id] = data.person;
       data.person["children"] = [];
       if(person.parents===-1){
@@ -63,7 +61,7 @@ const AddFamily = ({personsList, setPersonList,rootNode,setRootNode}) => {
               <Row>
                 <Col>
                   <Form.Group className="mb-3">
-                    <Form.Label>First Name</Form.Label>
+                    <Form.Label>Full Name</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter Name"
